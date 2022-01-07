@@ -112,7 +112,7 @@ app.post('/image',upload.single('image'), (req, res)=>{
         imageUrl: file.destination +"/"+ file.filename
     })
 })
-
+//delete삭제하기
 app.delete('/products/:id',async(req, res) => {
     const params = req.params;
     console.log('삭제삭제');
@@ -121,6 +121,23 @@ app.delete('/products/:id',async(req, res) => {
         "상품이 삭제되었습니다."
     ));
 })
+//banners로 요청이 왔을때 응답하기
+app.get("/banners",(req,res) => { 
+    models.Banner.findAll({
+        limit:3,
+        attributes: ["imageUrl","id","href"]
+    })
+    .then((result)=>{
+        res.send({
+            banners: result,
+        })
+    })
+    .catch((error)=>{
+        console.error(error);
+        res.send('에러가 발생했습니다.');
+    })
+})
+
 
 //설정한 app을 실행 시키기
 app.listen(port, ()=>{
