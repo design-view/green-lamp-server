@@ -65,6 +65,7 @@ app.get('/products',async (req, res)=>{
 app.post('/products', async(req,res)=>{
     const body = req.body;
     const { name, description, price, seller, imageUrl } = body;
+    console.log(imageUrl);
     //Product테이블에 데이터를 삽입
     //구문 > models.테이블이름.create
     models.Product.create({
@@ -85,6 +86,36 @@ app.post('/products', async(req,res)=>{
     })
    
 })
+
+//post방식 응답 지정
+app.post('/products/:id', async(req,res)=>{
+    const params = req.params;
+    console.log(params);
+    const body = req.body;
+    const { name, description, price, seller, imageUrl } = body;
+    console.log(body);
+    models.Product.findOne({  
+        //조건절
+           //조건절
+           where: {
+            id:params.id
+        }
+    })
+    .then(user => {
+        if (user) {
+            user.update({  
+                name,
+                description,
+                price,
+                seller,
+                imageUrl, 
+            })
+            .then(r => console.log("Data is updated!"));
+        }
+    });
+})
+
+
 //get방식 경로 파라미터 관리하기
 app.get('/products/:id',async(req,res) => {
     const params = req.params;
@@ -111,7 +142,7 @@ app.post('/image',upload.single('image'), (req, res)=>{
     const file = req.file;
     console.log(file);
     res.send({
-        imageUrl: file.destination +"/"+ file.filename
+        imageUrl: "http://localhost:8080/"+file.destination +"/"+ file.filename
     })
 })
 //delete삭제하기
